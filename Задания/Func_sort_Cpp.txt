@@ -1,0 +1,126 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+class   MyArray {
+    private: 
+    int n, g, *ms, *mj;
+    public:
+    MyArray (){
+        n=0;
+        ms=NULL;
+        mj=NULL;
+        //cout << "construct";
+    }
+    
+// Инициализация массива
+    void init(int k){
+        if(ms==NULL){
+            ms = new int[k];
+            n=k;
+        }
+        srand((unsigned)time(0));
+        for (int  i = 0; i < n; i++)
+        // ms[i] = i*7+2;
+        ms[i] = (-100 + rand() % 200);
+    }
+    
+// Вывод массива
+    void print(){
+        for (int i=0;i<n;i++) cout << ms[i]<<" ";
+        cout <<endl;
+    }
+    
+// Сортировка пузырьком
+    void sortBubl(){
+        int temp;
+        for (int i=0; i<n-1; i++){
+            for (int j=0; j<n-i-1; j++){
+                if (ms[j] > ms[j + 1]){
+                    temp = ms[j];
+                    ms[j] = ms[j + 1];
+                    ms[j + 1] = temp;
+                }
+            }
+        }
+    }
+    
+// Сортировка кучей
+    void heapify(int list[], int listLength, int root){
+    	int largest = root;
+    	int l = 2*root + 1;
+    	int r = 2*root + 2;
+    	  
+    	if (l < listLength && list[l] > list[largest])
+    		largest = l;
+    	  
+    	if (r < listLength && list[r] > list[largest])
+    		largest = r;
+    
+    	if (largest != root){
+    		swap(list[root], list[largest]);
+    		heapify(list, listLength, largest);
+    	   }
+    }
+      
+    void heapSort(){
+    	for(int i = n / 2 - 1; i >= 0; i--)
+    		heapify(ms, n, i);
+    	 
+    	for(int i = n - 1; i >= 0; i--){
+    		swap(ms[0], ms[i]);
+    		heapify(ms, i, 0);
+    	}
+    }
+// Добавление элемента в отсортированный массив
+    void addEl(int k){
+        int p=0;
+        mj = new int[n+1];
+        for (int i=0;i<n;i++){
+            mj[i+p]=ms[i];
+            if(ms[i+1]>=k && p==0){
+                mj[i+1]=k;
+                i++;
+                p++;
+                mj[i+1]=ms[i];
+            };
+        };
+        ms = mj;
+        n++;
+    }
+// Удаление лишнего
+    ~MyArray(){
+        if(ms) delete ms;
+        delete[] mj;
+      // cout << "destructor";
+    }
+};
+
+
+
+int main()
+{
+
+    MyArray m;
+    m.init(5000);
+    m.print();
+    // m.addEl(55);
+    unsigned int start_t1 = clock();
+    m.sortBubl();
+    unsigned int final_t1 = clock();
+    cout<< (final_t1-start_t1)/((double) CLOCKS_PER_SEC)*1000<< endl;
+    unsigned int start_t2 = clock();
+    m.heapSort();
+    unsigned int final_t2 = clock();
+    cout<< (final_t2-start_t2)/((double) CLOCKS_PER_SEC)*1000<< endl;
+
+
+    // MyArray *A =new MyArray; 
+    // A->init(10);
+    // A->addEl(25);
+    // A->print();
+    // delete A;
+
+    return 0;
+}

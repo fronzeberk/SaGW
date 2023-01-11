@@ -1,0 +1,62 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+
+void printElms(int * m, int k){
+    for(int i=0;i<k;i++) cout << m[i]<< " ";
+    cout << endl;
+}
+
+int * removeELm(int *m,int *k,int r){
+    int i, *tmp;
+    tmp = new int [*k-1];
+
+    for(i=0;i<r;i++)tmp[i]=m[i];
+    for(;i<*k-1;i++) tmp[i]=m[i+1];
+    (*k)--;
+    return tmp;
+}
+
+
+int * insertELm(int *m,int *k,int r,int val){
+    int i, *tmp;
+    tmp = new int [*k+1];
+
+    for(i=0;i<r;i++)tmp[i]=m[i];
+    tmp[r]=val;
+    for(i=r+1;i<*k+1;i++) tmp[i]=m[i-1];
+    (*k)++;
+    return tmp;
+}
+
+
+
+
+int main()
+{
+    srand(time(0));
+    
+    int *ms,*t,i,n=10;
+    
+    ms =new int [n];
+    
+    
+    for(i=0;i<n;i++) ms[i]=rand()%100;
+    
+    printElms(ms,n);
+    // ms= removeELm(ms,&n,3);
+    // delete ms;
+    // ms=t;
+    ms = insertELm(ms,&n,3,777);
+
+    
+    printElms(ms,n);
+    
+    
+    delete ms;
+    
+    return 0;
+}

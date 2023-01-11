@@ -1,0 +1,50 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Singleton{
+    private:
+    string login, pass;
+    Singleton() {login=""; pass="";}
+    Singleton(const Singleton&);
+    Singleton& operator= (Singleton&);
+    public:
+    void setlogin(string l){
+        login = l;
+    }
+    string getlogin(){
+        return login;
+    }
+    void setpass(string p){
+        pass = p;
+    }
+    string getpass(){
+        return pass;
+    }
+    
+    static Singleton& getInstance(){
+        static Singleton instance;
+        return instance;
+    }
+};
+
+int main()
+{
+    cout<<"LOGIN"<<" "<<"PASSWORD"<<endl;
+    Singleton& user1 = Singleton::getInstance();
+    Singleton& user2 = Singleton::getInstance();
+    
+    cout<< user1.getlogin()<<" "<<user1.getpass()<<endl;
+    
+    user1.setlogin("admin");
+    user1.setpass("adminPass");
+    cout<< user1.getlogin()<<" "<<user1.getpass()<<endl;
+    cout<< user2.getlogin()<<" "<<user2.getpass()<<endl;
+    user2.setlogin("root");
+    user2.setpass("rootPass");
+    cout<< user2.getlogin()<<" "<<user2.getpass()<<endl;
+    
+
+    return 0;
+}

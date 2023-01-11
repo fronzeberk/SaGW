@@ -1,0 +1,84 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+class   MyArray {
+    private: 
+    int n, *ms, *mj;
+    public:
+    MyArray (){
+        n=0;
+        ms=NULL;
+        mj=NULL;
+        //cout << "construct";
+    }
+
+    void init(int k){
+        if(ms==NULL){
+            ms = new int[k];
+            n=k;
+        }
+        for (int i=0;i<n;i++) ms[i]=i+1;
+    }
+
+    void print(){
+        for (int i=0;i<n;i++) cout << ms[i]<<" ";
+        cout <<endl;
+    }
+    
+    void set(int k, int v){
+        ms[k]=v;
+    }
+    
+    int get(int k){
+        return ms[k];
+    }
+    
+    void delEl(int k){
+        mj = new int[n-1];
+        for (int i=0;i<k;i++) mj[i]=ms[i];
+        for (int i=k;i<n-1;i++) mj[i]=ms[i+1];
+        ms = mj;
+        n--;
+    }
+    
+    void addEl(int k){
+        mj = new int[n+1];
+        for (int i=0;i<n+1;i++) mj[i]=ms[i];
+        mj[n]=k;
+        ms = mj;
+        n++;
+    }
+
+    ~MyArray(){
+        if(ms) delete ms;
+        delete[] mj;
+       // cout << "destructor";
+    }
+};
+
+
+
+int main()
+{
+
+    MyArray m;
+    m.init(10);
+    m.set(6, 1);
+    m.addEl(25);
+    m.delEl(5);
+    m.print();
+
+
+
+    MyArray *A =new MyArray; 
+    A->init(10);
+    A->set(6, 1);
+    A->addEl(25);
+    A->delEl(5);
+    A->print();
+    delete A;
+
+    return 0;
+}

@@ -1,0 +1,150 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+class point{
+    private: 
+    double x,y;
+    public:
+    point(){
+        x=0;
+        y=0;
+    }
+    point(double nx,double ny){
+        //перегрузка конструктора
+        x=nx;
+        y=ny;
+    }
+    double getX(){
+        return x;
+    }
+    double getY(){
+        return y;
+    }
+    void setX(double nx){
+        x=nx;
+    }
+    void setY(double ny){
+        y=ny;
+    }
+    void printPoint(){
+        cout<<"("<<x<<","<<y<<")"<<endl;    
+    }
+};
+
+class figure{
+    protected:
+    double x, y;
+    public:
+    figure(){
+        x=0;
+        y=0;
+    }
+    figure(point p){
+        x= p.getX();
+        y= p.getY();
+    }
+    void virtual print(){
+        cout << '('<< x <<", "<<y<<')'<<endl;
+    }
+    double virtual area(){
+        return 0;
+    }
+    double virtual length(){
+        return 0;
+    }
+};
+
+class circle : public figure{
+    protected:
+    double r;
+    public:
+    circle (point p, double nr){
+        x= p.getX();
+        y= p.getY();
+        r=nr;
+    }
+    double area(){
+        return 4*atan(1)*r*r;
+    }
+    double length(){
+        return 2*4*atan(1)*r;
+    }
+};
+
+class square : public figure{
+    protected:
+    double l;
+    public:
+    square (point p, double nl){
+        x= p.getX();
+        y= p.getY();
+        l=nl;
+    }
+    double area(){
+        return l*l;
+    }
+    double length(){
+        return 4*l;
+    }
+    void print(){
+        cout<< '('<<x<<", "<<y<<") "<< '('<<x+l<<", "<<y<<") "<< '('<<x+l<<", "<<y-l<<") "<< '('<<x<<", "<<y-l<<") "<< endl;
+    }
+};
+
+class triangle : public figure{
+    public:
+    double x1, x2, x3, y1, y2, y3;
+    triangle (point p1, point p2, point p3){
+        x1= p1.getX();
+        y1= p1.getY();
+        x2= p2.getX();
+        y2= p2.getY();
+        x3= p3.getX();
+        y3= p3.getY();
+    }
+    double area(){
+        return 0.5 * abs((x2-x1)*(y3-y1)-(x3-x1)*(y2-y1));
+    }
+    double length(){
+        return sqrt(pow(x2-x1,2)+pow(y2-y1,2))+sqrt(pow(x3-x2,2)+pow(y3-y2,2))+sqrt(pow(x1-x3,2)+pow(y1-y3,2));
+    }
+    void print(){
+        cout<< '('<<x1<<", "<<y1<<") "<< '('<<x2<<", "<<y2<<") "<< '('<<x3<<", "<<y3<<")"<< endl;
+    }
+};
+
+int main()
+{
+    point P1(2,3);
+    point P2(5,6);
+    point P3(1,5);
+    point P4(6,0);
+    point P5(4,8);
+    
+    figure *p1, *p2, *p3, *p4;
+    
+    p1 = new figure(P1);
+    p1->print();
+    cout<<endl;
+    
+    p2 = new circle(P2,8); //круг
+    p2->print();
+    cout<< "Длина: " << p2->length() <<endl;
+    cout<< "Площадь: " << p2->area() <<endl;
+    cout<<endl;
+    
+    p3 = new square(P3,4); // квадрат
+    p3->print();
+    cout<< "Длина: " << p2->length() <<endl;
+    cout<< "Площадь: " << p2->area() <<endl;
+    cout<<endl;
+    
+    p4 = new triangle(P5,P2,P4); // треугольник
+    p4->print();
+    cout<< "Длина: " << p4->length() <<endl;
+    cout<< "Площадь: " << p4->area() <<endl;
+
+    return 0;
+}

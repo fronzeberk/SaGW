@@ -1,0 +1,295 @@
+#include <iostream>
+
+using namespace std;
+
+class mString {
+    private:
+    char *st;
+    public:
+    mString(){
+        st = NULL;
+    }
+    
+    void test(){
+        st = new char(10);
+        char c = 'a';
+        for (int i=0; i<10; i++) st[i] = c++;
+        st[9]='\0';
+        cout << st;
+    }
+    
+    ~mString(){
+        if (st) delete st;
+    }
+
+    mString substr (int start, int count);
+    mString replace (mString &s1, mString &s2);
+    int find (const mString &s);
+    
+    void operator = (const mString &s);
+    void operator = (const char *c);
+    mString operator + (const mString &s) const;
+    mString operator + (const char *s) const;
+    friend mString operator + (const char *c, const mString &s);
+    
+    friend bool operator == (const mString &a, const mString &b);
+    friend bool operator > (const mString &a, const mString &b);
+    friend bool operator >= (const mString &a, const mString &b);
+    friend bool operator < (const mString &a, const mString &b);
+    friend bool operator <= (const mString &a, const mString &b);
+    
+    friend istream& operator >> (istream &in, mString &s);
+    friend ostream& operator << (ostream &out, const mString &s);
+};
+
+ostream& operator<< (ostream &out, const mString &s){
+    out << s.st <<endl;
+    return out;
+}
+
+istream& operator>> (istream &in, mString &s){
+    char buf[10000], t;
+    int i, k=0;
+    t=in.get();
+    while ((int)(t)!=10){
+        buf[k++]=t;
+        t=in.get();
+    }
+    if (s.st) delete s.st;
+    s.st = new char[k+1];
+    for (i=0; i<k; i++) s.st[i]=buf[i];
+    s.st[i]='\0';
+    return in;
+}
+
+void mString::operator= (const mString &s){
+    if (st) delete st;
+    int i, k=0;
+    while (s.st[k++]);
+    st = new char[k];
+    for (i=0; i<k; i++) st[i]=s.st[i];
+}
+
+void mString::operator= (const char *c){
+    if (st) delete st;
+    int i, l=0;
+    while (c[l++]);
+    st = new char[l];
+    for (i=0; i<l; i++) st[i]=c[i];
+    st[i]='\0';
+}
+
+mString mString::operator+ (const mString &b) const{
+    int i, j, k=0, l=0;
+    mString ou;
+    
+    while (st[k++]);
+    k--;
+    while (b.st[l++]);
+    l--;
+    if (ou.st) delete ou.st;
+    
+    ou.st = new char[k+l];
+    for (i=0; i<k; i++) ou.st[i]=st[i];
+    for (j=k; j<k+l; j++) ou.st[j]=b.st[j-k];
+    ou.st[j]='\0';
+    
+    return ou;
+}
+
+mString mString::operator + (const char *s) const{
+    int i, j, k=0, l=0;
+    mString ou;
+    
+    while (st[k++]);
+    k--;
+    while (s[l++]);
+    l--;
+    if (ou.st) delete ou.st;
+    
+    ou.st = new char[k+l];
+    for (i=0; i<k; i++) ou.st[i]=st[i];
+    for (j=k; j<k+l; j++) ou.st[j]=s[j-k];
+    ou.st[j]='\0';
+    
+    return ou;
+}
+
+mString operator + (const char *c, const mString &s){
+    int i, j, k=0, l=0;
+    mString ou;
+    
+    while (c[k++]);
+    k--;
+    while (s.st[l++]);
+    l--;
+    if (ou.st) delete ou.st;
+    
+    ou.st = new char[k+l];
+    for (i=0; i<k; i++) ou.st[i]=c[i];
+    for (j=k; j<k+l; j++) ou.st[j]=s.st[j-k];
+    ou.st[j]='\0';
+    
+    return ou;
+}
+
+bool operator == (const mString &a, const mString &b){
+    int i, j, k=0, l=0;
+    
+    while (a.st[k++]);
+    k--;
+    while (b.st[l++]);
+    l--;
+    if (k!=l) return 0;
+    
+    for (i=0; i<k; i++) if (a.st[i]!=b.st[i]) return 0;
+    
+    return 1;
+}
+
+bool operator != (const mString &a, const mString &b){
+    return !(a==b);
+}
+
+bool operator > (const mString &a, const mString &b){
+    int i, j, k=0, l=0;
+    
+    while (a.st[k++]);
+    k--;
+    while (b.st[l++]);
+    l--;
+    int r = k;
+    if (l<r) r = l;
+    
+    for (i=0; i<=r; i++){
+        if (a.st[i]>b.st[i]) return 1;
+        if (a.st[i]<b.st[i]) return 0;
+    }
+    return 0;
+}
+
+bool operator >= (const mString &a, const mString &b){
+    int i, j, k=0, l=0;
+    
+    while (a.st[k++]);
+    k--;
+    while (b.st[l++]);
+    l--;
+    int r = k;
+    if (l<r) r = l;
+    
+    for (i=0; i<=r; i++){
+        if (a.st[i]>b.st[i]) return 1;
+        if (a.st[i]<b.st[i]) return 0;
+    }
+    return 1;
+}
+
+bool operator < (const mString &a, const mString &b){
+    int i, j, k=0, l=0;
+    
+    while (a.st[k++]);
+    k--;
+    while (b.st[l++]);
+    l--;
+    int r = k;
+    if (l<r) r = l;
+    
+    for (i=0; i<=r; i++){
+        if (a.st[i]<b.st[i]) return 1;
+        if (a.st[i]>b.st[i]) return 0;
+    }
+    return 0;
+}
+
+bool operator <= (const mString &a, const mString &b){
+    int i, j, k=0, l=0;
+    
+    while (a.st[k++]);
+    k--;
+    while (b.st[l++]);
+    l--;
+    int r = k;
+    if (l<r) r = l;
+    
+    for (i=0; i<=r; i++){
+        if (a.st[i]<b.st[i]) return 1;
+        if (a.st[i]>b.st[i]) return 0;
+    }
+    return 1;
+}
+
+mString mString::substr (int start, int count){
+    mString ou;
+    int k=start;
+    ou.st = new char[count+1];
+    for (int i=0; i<count; i++,k++) ou.st[i]=st[k];
+    ou.st[count+1]='\0';
+    return ou;
+}
+
+int mString::find (const mString &s){
+    int i,k=0,l=0;
+    
+    while (st[k++]);
+    k--;
+    while (s.st[l++]);
+    l--;
+    
+    for (i=0; i<k; i++){
+        if (st[i]==s.st[0]){
+            if (substr(i,l)==s) return i;
+        }
+    }
+    
+    return -1;
+}
+
+mString mString::replace (mString &s1, mString &s2){
+    mString ou;
+    int i=0, l=0, k=0, p=0, index;
+    index = find(s1);
+    
+    while (s1.st[l++]);
+    l--;
+    while (s2.st[k++]);
+    k--;
+    while (st[p++]);
+    p--;
+    
+    ou.st = new char[p-l+k];
+    
+    for (i; i < index; i++) ou.st[i]=st[i];
+    for (i; i<k+index; i++) ou.st[i]=s2.st[i-index];
+    for (i; i<(p-l+k); i++) ou.st[i]=st[i-k+index];
+    
+    return ou;
+}
+
+int main()
+{
+    mString s, p, in1, in2;
+    s.test();
+    cout << " <- testing func-test()" << endl;
+    p = s + "world";
+    s = "hello" + p;
+    cout<< "p = " << p;
+    cout<< "s = " << s;
+    // cout<< "p=s: " << std::boolalpha << (p==s) <<endl;
+    // cout<< endl << "input test: " << endl;
+    in1= "loa";
+    in2= "77777";
+    // cout<< in1+in2;
+    
+    // cout<< std::boolalpha << (in1!=in2) <<endl;
+    // cout<< s.substr(2,4)<<endl;
+    // cout<< s.find(in1) <<endl;
+    cout<< s.replace(in1, in2) <<endl;
+    
+    return 0;
+}
+
+// replace(s1,s2), replace(s1,s2, k)
+// в s заменить подстроку s1 на s2
+// в s заменить подстроку s1 на s2 k раз
+// доделать чтобы можно передавать "авотива"
